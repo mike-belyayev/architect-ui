@@ -2,3 +2,14 @@
 .toolboxContainer {
     width: 100%;
 }
+
+.tool-button {
+    background-color: rgb(184, 186, 199);
+    border: none;
+    margin: 0.1rem;
+    padding: 0.2rem 0.5rem;
+}
+
+.tool-button.selected {
+    background-color: lime;
+}
