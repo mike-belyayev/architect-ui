@@ -11,6 +11,25 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fabricRef = useRef<fabric.Canvas | null>(null);
 
+    const createGrid = (canvas: fabric.Canvas, gridSize: number) => {
+        const width = canvas.getWidth();
+        const height = canvas.getHeight();
+    
+        for (let i = 0; i < width / gridSize; i++) {
+            canvas.add(new fabric.Line([i * gridSize, 0, i * gridSize, height], {
+                stroke: '#ccc',
+                selectable: false
+            }));
+        }
+    
+        for (let i = 0; i < height / gridSize; i++) {
+            canvas.add(new fabric.Line([0, i * gridSize, width, i * gridSize], {
+                stroke: '#ccc',
+                selectable: false
+            }));
+        }
+    };
+    
     useEffect(() => {
         const canvasElement = canvasRef.current;
         if (canvasElement && !fabricRef.current) {
@@ -20,6 +39,20 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
                 backgroundColor: '#f0f0f0',
             });
             fabricRef.current = canvas;
+    
+            // Add grid
+            const gridSize = 50; // 50 pixels = 10cm (adjust as needed)
+            createGrid(canvas, gridSize);
+    
+            // Snap to grid
+            canvas.on('object:moving', (options) => {
+                if (options.target) {
+                    options.target.set({
+                        left: Math.round(options.target.left! / gridSize) * gridSize,
+                        top: Math.round(options.target.top! / gridSize) * gridSize
+                    });
+                }
+            });
         }
     }, []); // Empty dependency array ensures this runs only once
 

@@ -1,7 +1,6 @@
 /* App.css */
 .App {
   text-align: center;
-  background-color: #f9f9f9;
   padding: 0; /* Add some padding around the app */
   width: 100%; /* Take full width */
   max-width: 1920px; /* Max width for larger screens */
