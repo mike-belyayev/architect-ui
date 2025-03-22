@@ -1,0 +1,21 @@
+/* FloorPlanCanvas.css */
+.floorPlanCanvasContainer {
+    width: 100%;  /* Take up the full width of its parent */
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 auto; /* Center the canvas horizontally */
+  }
+  
+  .floorPlanCanvas {
+    display: block; /* Removes extra space below the canvas */
+    width: 100%;     /* Canvas fills the container */
+    height: auto;    /* Height adjusts to maintain aspect ratio */
+    max-width: 80vw;
+  }
+  
+  /* Media query for smaller screens (e.g., smartphones) */
+  @media (max-width: 600px) {
+    .floorPlanCanvasContainer {
+      max-width: 100%; /* Allow full width on smaller screens */
+    }
+  }
+  
