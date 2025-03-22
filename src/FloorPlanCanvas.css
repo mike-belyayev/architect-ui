@@ -1,33 +1,16 @@
 /* FloorPlanCanvas.css */
 .floorPlanCanvasContainer {
     display: flex;
-    justify-content: center;
-  }
-
-  .floorPlanCanvas {
-    display: block; /* Removes extra space below the canvas */
-    max-width: min(100vw, 1200px); /* Example */
-    height: auto;    /* Height adjusts to maintain aspect ratio */
-    margin: 0 auto; /* Center the canvas horizontally within the container */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: 100%;
+    height: 100%; /* Adjust as needed */
+    position: relative;
+    overflow: hidden;
 }
 
-@media (min-width: 1600px) {
-    .floorPlanCanvas {
-        max-width: 1200px; /* Larger screens */
-    }
+.floorPlanCanvas {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
 }
-
-@media (min-width: 2560px) {
-    .floorPlanCanvas {
-        max-width: 1500px; /* Even larger screens */
-    }
-}
-
-  
-  /* Media query for smaller screens (e.g., smartphones) */
-  @media (max-width: 600px) {
-    .floorPlanCanvasContainer {
-      max-width: 100%; /* Allow full width on smaller screens */
-    }
-  }
-  
