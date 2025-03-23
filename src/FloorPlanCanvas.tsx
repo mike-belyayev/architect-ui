@@ -11,8 +11,11 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
     const fabricRef = useRef<fabric.Canvas | null>(null);
 
     const createGrid = (canvas: fabric.Canvas, gridSize: number) => {
-        const width = canvas.getWidth();
-        const height = canvas.getHeight();
+        // const width = canvas.getWidth();
+        // const height = canvas.getHeight();
+
+        const width = 15000;
+        const height = 15000;
 
         for (let i = 0; i < width / gridSize; i++) {
             canvas.add(new fabric.Line([i * gridSize, 0, i * gridSize, height], {
@@ -37,7 +40,7 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
             const canvas = new fabric.Canvas(canvasElement, {
                 width: canvasElement.offsetWidth,
                 height: canvasElement.offsetHeight,
-                backgroundColor: '#f0f0f0',
+                backgroundColor: 'white',
             });
             fabricRef.current = canvas;
 
