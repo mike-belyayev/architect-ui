@@ -79,6 +79,32 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
                 opt.e.stopPropagation();
             });
 
+            // Add delete selected functionality
+            const handleDelete = () => {
+                const activeObjects = canvas.getActiveObjects();
+                if (activeObjects.length > 0) {
+                    activeObjects.forEach((obj) => {
+                        canvas.remove(obj);
+                    });
+                    canvas.discardActiveObject(); // Deselect objects
+                }
+            };
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Delete' || e.key === 'Backspace') {
+                    handleDelete();
+                }
+            });
+
+            return () => {
+                document.removeEventListener('keydown', (e) => {
+                    if (e.key === 'Delete' || e.key === 'Backspace') {
+                        handleDelete();
+                    }
+                });
+            };
+
+
         }
     }, []); // Empty dependency array ensures this runs only once
 
