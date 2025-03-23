@@ -53,6 +53,28 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
                     });
                 }
             });
+            // Add zoom functionality
+            canvas.on('mouse:wheel', (opt: fabric.TEvent<WheelEvent>) => {
+                const event = opt.e as WheelEvent;
+                const delta = event.deltaY;
+                let zoom = canvas.getZoom();
+                zoom *= 0.999 ** delta;
+                if (zoom > 20) zoom = 20;
+                if (zoom < 0.01) zoom = 0.01;
+            
+                // Get the pointer position
+                const pointer = canvas.getPointer(event);
+            
+                // Calculate the zoom point
+                const zoomPoint = new fabric.Point(pointer.x, pointer.y);
+            
+                // Set the zoom
+                canvas.zoomToPoint(zoomPoint, zoom);
+            
+                opt.e.preventDefault();
+                opt.e.stopPropagation();
+            });
+                        
         }
     }, []); // Empty dependency array ensures this runs only once
 
