@@ -4,10 +4,18 @@ import './Toolbox.css';
 import { AppContext } from './ContextProvider';
 
 const Toolbox: React.FC = () => {
-  const { selectedTool, setSelectedTool } = useContext(AppContext)!;
+  const { selectedTool, setSelectedTool, saveCanvas, loadCanvas } = useContext(AppContext)!;
 
   const handleToolClick = (tool: string) => {
     setSelectedTool(selectedTool === tool ? null : tool);
+  };
+
+  const handleSaveCanvas = () => {
+    saveCanvas('4xgood@gmail.com', 'default');
+  };
+  
+  const handleLoadCanvas = () => {
+    loadCanvas('4xgood@gmail.com', 'default');
   };
 
   return (
@@ -30,9 +38,11 @@ const Toolbox: React.FC = () => {
       >
         Circle
       </button>
-      {/* Separate save button (no selection state) */}
-      <button className="tool-button save-button">
+      <button onClick={() => handleSaveCanvas()} className="tool-button save-button">
         Save
+      </button>
+      <button onClick={() => handleLoadCanvas()} className="tool-button save-button">
+        Load
       </button>
     </div>
   );

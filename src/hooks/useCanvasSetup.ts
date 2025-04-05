@@ -46,7 +46,7 @@ export const useCanvasSetup = ({
             };
 
             // Add grid here
-            createGrid(canvas, gridSize);
+            createGrid(canvas, gridSize)
 
             canvas.on('object:moving', (options) => {
                 if (options.target) {
