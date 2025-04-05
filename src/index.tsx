@@ -8,7 +8,7 @@ import { AppContextProvider } from './ContextProvider';
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 if (!clerkPubKey) {
-  throw new Error("Missing Clerk Publishable Key");
+  throw new Error('Missing Clerk Publishable Key');
 }
 
 const root = createRoot(document.getElementById('root')!);
