@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useContext } from 'react';
 import * as fabric from 'fabric';
 import { AppContext } from './ContextProvider';
 import './FloorPlanCanvas.css';
-import { createGrid, handleDelete, updateShape } from './canvasUtils';
+import { createGrid, handleDelete, updateShape } from './utils/canvasUtils';
 
 interface FloorPlanCanvasProps {
     selectedTool: string | null;
