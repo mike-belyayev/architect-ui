@@ -14,7 +14,7 @@ const App: React.FC = () => {
     const [selectedTool, setSelectedTool] = useState<string | null>(null);
     const [selectedCanvas, setSelectedCanvas] = useState<string | null>(null);
     const [canvases, setCanvases] = useState<string[]>([]);
-    
+
 
     const handleToolSelect = (tool: string | null) => {
         setSelectedTool(tool);
@@ -30,38 +30,62 @@ const App: React.FC = () => {
                 .catch((err) => console.error('Error fetching canvases:', err));
         }
     };
-    
-    const handleSaveCanvas = () => {
-        if (emailAddress) return;
-        const canvasName = prompt('Enter a name for your canvas:', 'Untitled');
-        if (canvasName) {
-            // Replace this with actual canvas data
-            const canvasData = { example: 'your canvas data here' };
-    
-            fetch('/api/canvas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${sessionId}`,
-                },
-                body: JSON.stringify({
-                    email: emailAddress,
-                    drawingName: canvasName,
-                    canvasData,
-                }),
-            })
-                .then((res) => res.json())
-                .then(() => {
-                    alert('Canvas saved successfully!');
-                    fetchCanvases(); // Refresh the dropdown list
-                })
-                .catch((err) => console.error('Error saving canvas:', err));
+
+    const handleSaveCanvas = (emailAddress: string, canvasName: string, canvasData: string) => {
+        // Basic validation
+
+        if (!emailAddress) {
+            alert('Email is required');
+            return;
         }
+
+        if (!canvasName?.trim()) {
+            alert('Please enter a valid canvas name');
+            return;
+        }
+
+        if (!canvasData) {
+            alert('Canvas data is missing');
+            return;
+        }
+
+        fetch('https://architect-api.vercel.app/canvas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                //Authorization: `Bearer ${sessionId}`,
+            },
+            body: JSON.stringify({
+                email: emailAddress,
+                drawingName: canvasName.trim(),
+                canvasData,
+            }),
+        })
+            .then(async (res) => {
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Save failed');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                alert(data.wasCreated
+                    ? `New canvas "${canvasName}" saved!`
+                    : `Updated existing "${canvasName}"`
+                );
+                if (typeof fetchCanvases === 'function') {
+                    fetchCanvases();
+                }
+            })
+            .catch((err) => {
+                console.error('Save error:', err);
+                alert(`Save failed: ${err.message}`);
+            });
     };
-    
+
     const handleLoadCanvas = () => {
         if (!emailAddress || !selectedCanvas) return;
-    
+
         fetch(`/api/canvas/${emailAddress}/${selectedCanvas}`, {
             headers: { Authorization: `Bearer ${sessionId}` },
         })
@@ -74,20 +98,20 @@ const App: React.FC = () => {
     };
 
     return (
-            <div className="App">
+        <div className="App">
             <div style={{ position: 'absolute', top: 10, right: 10 }}>
                 <SignedOut>
                     <SignInButton />
                 </SignedOut>
-                    <SignedIn>
-                    <UserButton /> 
-                    </SignedIn>
+                <SignedIn>
+                    <UserButton />
+                </SignedIn>
             </div>
 
             <h1>Draw your floor plan</h1>
-            <Toolbox onToolSelect={handleToolSelect} selectedTool={selectedTool} />
+            <Toolbox />
             <FloorPlanCanvas selectedTool={selectedTool} />
-            </div>
+        </div>
     );
 };
 

@@ -1,38 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import * as fabric from 'fabric';
+import { AppContext } from './ContextProvider';
 import './FloorPlanCanvas.css';
+import { createGrid, handleDelete, updateShape } from './canvasUtils';
 
 interface FloorPlanCanvasProps {
     selectedTool: string | null;
 }
 
-const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
+const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = () => {
+    const { selectedTool, setSelectedTool } = useContext(AppContext)!;
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fabricRef = useRef<fabric.Canvas | null>(null);
-
-    const createGrid = (canvas: fabric.Canvas, gridSize: number) => {
-        // const width = canvas.getWidth();
-        // const height = canvas.getHeight();
-
-        const width = 15000;
-        const height = 15000;
-
-        for (let i = 0; i < width / gridSize; i++) {
-            canvas.add(new fabric.Line([i * gridSize, 0, i * gridSize, height], {
-                stroke: '#ccc',
-                selectable: false,
-                evented: false // prevent grid from being interactive
-            }));
-        }
-
-        for (let i = 0; i < height / gridSize; i++) {
-            canvas.add(new fabric.Line([0, i * gridSize, width, i * gridSize], {
-                stroke: '#ccc',
-                selectable: false,
-                evented: false // prevent grid from being interactive
-            }));
-        }
-    };
 
     useEffect(() => {
         const canvasElement = canvasRef.current;
@@ -79,27 +58,16 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
                 opt.e.stopPropagation();
             });
 
-            // Add delete selected functionality
-            const handleDelete = () => {
-                const activeObjects = canvas.getActiveObjects();
-                if (activeObjects.length > 0) {
-                    activeObjects.forEach((obj) => {
-                        canvas.remove(obj);
-                    });
-                    canvas.discardActiveObject(); // Deselect objects
-                }
-            };
-
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Delete' || e.key === 'Backspace') {
-                    handleDelete();
+                    handleDelete(canvas);
                 }
             });
 
             return () => {
                 document.removeEventListener('keydown', (e) => {
                     if (e.key === 'Delete' || e.key === 'Backspace') {
-                        handleDelete();
+                        handleDelete(canvas);
                     }
                 });
             };
@@ -226,7 +194,7 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
                     lastPosY = event.e.clientY;
                 } else if (isDrawing && currentShape) {
                     const pointer = canvas.getPointer(event.e);
-                    updateShape(pointer);
+                    updateShape(pointer, selectedTool, currentShape, canvas);
                 }
             } else if (event.e instanceof TouchEvent) {
                 const touch = event.e.touches[0];
@@ -238,32 +206,10 @@ const FloorPlanCanvas: React.FC<FloorPlanCanvasProps> = ({ selectedTool }) => {
                         pointerType: 'touch'
                     });
                     const pointer = canvas.getPointer(pointerEvent);
-                    updateShape(pointer);
+                    updateShape(pointer, selectedTool, currentShape, canvas);
                 }
             }
         };
-
-        const updateShape = (pointer: { x: number; y: number }) => {
-            switch (selectedTool) {
-                case 'line':
-                    (currentShape as fabric.Line).set({ x2: pointer.x, y2: pointer.y });
-                    break;
-                case 'rectangle':
-                    const rect = currentShape as fabric.Rect;
-                    rect.set({
-                        width: Math.abs(pointer.x - rect.left!),
-                        height: Math.abs(pointer.y - rect.top!),
-                    });
-                    break;
-                case 'circle':
-                    const circle = currentShape as fabric.Circle;
-                    const radius = Math.sqrt(Math.pow(pointer.x - circle.left!, 2) + Math.pow(pointer.y - circle.top!, 2));
-                    circle.set({ radius: radius });
-                    break;
-            }
-            canvas.renderAll();
-        };
-
 
         const handleMouseUp = () => {
             isDrawing = false;
